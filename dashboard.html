@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Library Management System</title>
+    <style>
+      body {
+        background: rgb(244,124,136);
+background: -moz-radial-gradient(circle, rgba(244,124,136,0.7456232492997199) 0%, rgba(30,244,231,0.7372198879551821) 100%);
+background: -webkit-radial-gradient(circle, rgba(244,124,136,0.7456232492997199) 0%, rgba(30,244,231,0.7372198879551821) 100%);
+background: radial-gradient(circle, rgba(244,124,136,0.7456232492997199) 0%, rgba(30,244,231,0.7372198879551821) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#f47c88",endColorstr="#1ef4e7",GradientType=1); ;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      nav ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        background-color: #333;
+        overflow: hidden;
+      }
+
+      nav ul li {
+        float: left;
+      }
+
+      nav ul li a {
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+      }
+
+      nav ul li a:hover {
+        background-color: #111;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 20px auto;
+      }
+
+      h1 {
+        margin-top: 0;
+      }
+
+      #book-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      #book-table th,
+      #book-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+      }
+
+      #book-table th {
+        background-color: #f7c037;
+      }
+
+      #book-table tbody tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+
+      #book-table tbody tr:hover {
+        background-color: #ddd;
+      }
+
+      select {
+        padding: 8px;
+      }
+
+      button {
+        padding: 8px 16px;
+        background-color: red;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      .buy-btn {
+        background-color: green;
+      }
+
+      button:hover {
+        background-color: black;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Dashboard</h1>
+      <h1>Total Books: <span id="book-count">0</span></h1>
+      <label for="categoryFilter">Filter by Category:</label>
+      <select id="categoryFilter">
+        <option value="All">All</option>
+        <option value="Fiction">Fiction</option>
+        <option value="Self Help">Self Help</option>
+        <option value="Finance">Finance</option>
+      </select>
+      <table id="book-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Author</th>
+            <th>Description</th>
+            <th>Added Date</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Buy</th>
+            <th>Bookmark</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </body>
+</html>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+            const bookCountElement = document.getElementById("book-count");
+            const categoryFilter = document.getElementById("categoryFilter");
+            const bookTableBody = document.querySelector("#book-table tbody");
+
+            function displayBooks(books) {
+                bookTableBody.innerHTML = "";
+                books.forEach((book) => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${book.bookName}</td>
+                        <td>${book.authorName}</td>
+                        <td>${book.bookDescription}</td>
+                        <td>${book.addedDate}</td>
+                        <td>${book.bookCategory}</td>
+                        <td>${book.bookPrice}</td>
+                        <td><button class="buy-btn">Buy</button></td>
+                        <td><button class="bookmark-btn">Add</button></td>
+                    `;
+                    row.querySelector(".buy-btn").addEventListener("click", function () {
+                        let buyList = JSON.parse(localStorage.getItem("buy-list")) || [];
+                        buyList.push(book);
+                        localStorage.setItem("buy-list", JSON.stringify(buyList));
+                        let updatedBooks = books.filter((bk) => bk !== book);
+                        localStorage.setItem("book-list", JSON.stringify(updatedBooks));
+                        displayBooks(updatedBooks);
+                        updateBookCount(updatedBooks);
+                    });
+                    row.querySelector(".bookmark-btn").addEventListener("click", function () {
+                        let bookmarkList = JSON.parse(localStorage.getItem("bookmark-list")) || [];
+                        bookmarkList.push(book);
+                        localStorage.setItem("bookmark-list", JSON.stringify(bookmarkList));
+                        let updatedBooks = books.filter((bk) => bk !== book);
+                        localStorage.setItem("book-list", JSON.stringify(updatedBooks));
+                        displayBooks(updatedBooks);
+                        updateBookCount(updatedBooks);
+                    });
+                    bookTableBody.appendChild(row);
+                });
+                updateBookCount(books);
+            }
+
+            function updateBookCount(books) {
+                bookCountElement.textContent = books.length;
+                if (books.length === 0) {
+                    window.location.href = "buy.html";
+                }
+            }
+
+            function filterBooksByCategory(category) {
+                const books = JSON.parse(localStorage.getItem("book-list")) || [];
+                if (category === "All") {
+                    return books;
+                } else {
+                    return books.filter((book) => book.bookCategory === category);
+                }
+            }
+
+            categoryFilter.addEventListener("change", function () {
+                const selectedCategory = categoryFilter.value;
+                const filteredBooks = filterBooksByCategory(selectedCategory);
+                displayBooks(filteredBooks);
+            });
+
+            const allBooks = JSON.parse(localStorage.getItem("book-list")) || [];
+            displayBooks(allBooks);
+        });
+ 
+</script>

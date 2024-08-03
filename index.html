@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Library Management System</title>
+    <style>
+      body {
+        background: rgb(244,124,136);
+background: -moz-radial-gradient(circle, rgba(244,124,136,0.7456232492997199) 0%, rgba(30,244,231,0.7372198879551821) 100%);
+background: -webkit-radial-gradient(circle, rgba(244,124,136,0.7456232492997199) 0%, rgba(30,244,231,0.7372198879551821) 100%);
+background: radial-gradient(circle, rgba(244,124,136,0.7456232492997199) 0%, rgba(30,244,231,0.7372198879551821) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#f47c88",endColorstr="#1ef4e7",GradientType=1); ;
+        font-family: Arial, sans-serif;
+        margin-left:33%;
+        padding-left: 70px;
+        padding-right: 5px;
+        padding-top: 10px;
+        /* border:1px solid; */
+        width: 450px;
+        height: 600px;
+        margin-top: 20px;
+        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+      }
+
+      nav ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        background-color: #333;
+        overflow: hidden;
+      }
+
+      nav ul li {
+        float: left;
+      }
+
+      nav ul li a {
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+      }
+
+      nav ul li a:hover {
+        background-color: #111;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 20px auto;
+      }
+
+      form label {
+        display: inline-block;
+        width: 150px;
+      }
+
+      form input,
+      form select {
+        width: 400px;
+        height: 50px;
+        margin-bottom: 10px;
+      }
+
+      form button {
+        padding: 10px 20px;
+        background-color: #333;
+        color: white;
+        border: none;
+        cursor: pointer;
+        width: 400px;
+      }
+
+      form button:hover {
+        background-color: #111;
+      }
+      #Head{
+    display: flex;
+    margin-left:-850px;
+}
+    </style>
+  </head>
+  <body>
+    
+    <div id="Head">
+
+        <div style="display: flex;margin-left: 920px;cursor: pointer;gap: 10px;">
+            <a href="index.html" style="color: rgb(121, 7, 121); text-decoration: underline;">Home</a><br>
+            <a href="dashboard.html" style="color: rgb(121, 7, 121); text-decoration: underline;">Dashboard </a><br>
+            <a href="buy.html" style="color: rgb(121, 7, 121); text-decoration: underline;">Buy</a><br>
+            <a href="bookmark.html" style="color: rgb(121, 7, 121); text-decoration: underline;">Added Books</a><br>
+
+    </div>
+    </div>
+    <hr>
+    <div class="container">
+      <h1>Library Management System</h1>
+      <form id="book-form">
+        <input
+          type="text"
+          id="bookName"
+          placeholder="Book Name"
+          required
+        /><br />
+
+        <input
+          type="text"
+          id="authorName"
+          placeholder="Author Name"
+          required
+        /><br />
+
+        <input
+          type="text"
+          id="bookDescription"
+          placeholder="Book Description"
+          required
+        /><br />
+        <p>Adding Date:-</p>
+
+        <input type="date" id="addedDate" required /><br />
+
+        <select id="bookCategory" aria-placeholder="Select Category" required>
+          <option value="Fiction">Fiction</option>
+          <option value="Self Help">Self Help</option>
+          <option value="Finance">Finance</option></select
+        ><br />
+        <input
+          type="number"
+          id="bookPrice"
+          placeholder="Book's Price "
+          required
+        /><br />
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  </body>
+</html>
+<script>
+  document
+    .getElementById("book-form")
+    .addEventListener("submit", function (event) {
+      event.preventDefault();
+      let bookName = document.getElementById("bookName").value;
+      let authorName = document.getElementById("authorName").value;
+      let bookDescription = document.getElementById("bookDescription").value;
+      let addedDate = document.getElementById("addedDate").value;
+      let bookCategory = document.getElementById("bookCategory").value;
+      let bookPrice = parseFloat(document.getElementById("bookPrice").value);
+
+      if (isNaN(bookPrice) || bookPrice <= 0) {
+        alert("Please enter a valid book price.");
+        return;
+      }
+
+      let book = {
+        bookName: bookName,
+        authorName: authorName,
+        bookDescription: bookDescription,
+        addedDate: addedDate,
+        bookCategory: bookCategory,
+        bookPrice: bookPrice,
+      };
+
+      let books = JSON.parse(localStorage.getItem("book-list")) || [];
+      books.push(book);
+      localStorage.setItem("book-list", JSON.stringify(books));
+
+      alert("Book added successfully!");
+      this.reset();
+          window.location.href = "dashboard.html";
+    });
+</script>

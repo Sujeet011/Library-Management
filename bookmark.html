@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookmark - Library Management System</title>
+   <style>
+    body {
+        background: rgb(244,124,136);
+background: -moz-radial-gradient(circle, rgba(244,124,136,0.7456232492997199) 0%, rgba(30,244,231,0.7372198879551821) 100%);
+background: -webkit-radial-gradient(circle, rgba(244,124,136,0.7456232492997199) 0%, rgba(30,244,231,0.7372198879551821) 100%);
+background: radial-gradient(circle, rgba(244,124,136,0.7456232492997199) 0%, rgba(30,244,231,0.7372198879551821) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#f47c88",endColorstr="#1ef4e7",GradientType=1); ;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background-color: #333;
+    overflow: hidden;
+}
+
+nav ul li {
+    float: left;
+}
+
+nav ul li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+nav ul li a:hover {
+    background-color: #111;
+}
+
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+h1 {
+    margin-top: 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th, table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+table th {
+    background-color: #f0cf40;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+table tbody tr:hover {
+    background-color: #ddd;
+}
+#Head{
+    display: flex;
+}
+
+   </style>
+</head>
+<body>
+    <div id="Head">
+        <h2>Masai Library</h2>
+        <div style="display: flex;margin-left: 920px;cursor: pointer;gap: 10px;">
+            <a href="index.html" style="color: rgb(121, 7, 121); text-decoration: underline;">Home</a><br>
+            <a href="dashboard.html" style="color: rgb(121, 7, 121); text-decoration: underline;">Dashboard </a><br>
+            <a href="buy.html" style="color: rgb(121, 7, 121); text-decoration: underline;">Buy</a><br>
+            <a href="bookmark.html" style="color: rgb(121, 7, 121); text-decoration: underline;">Added Books</a><br>
+    </div>
+    </div>
+    <hr>
+
+    <div class="container">
+        <table id="bookmark-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Author</th>
+                    <th>Description</th>
+                    <th>Added Date</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Buy</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</body>
+</html>
+<script>
+   document.addEventListener('DOMContentLoaded', function () {
+    const bookmarkTableBody = document.querySelector('#bookmark-table tbody');
+
+    function displayBookmarks(bookmarks) {
+        bookmarkTableBody.innerHTML = '';
+        bookmarks.forEach((bookmark, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${bookmark.bookName}</td>
+                <td>${bookmark.authorName}</td>
+                <td>${bookmark.bookDescription}</td>
+                <td>${bookmark.addedDate}</td>
+                <td>${bookmark.bookCategory}</td>
+                <td>${bookmark.bookPrice}</td>
+                <td><button class="buy-btn" data-index="${index}">Buy</button></td>
+                <td><button class="delete-btn" data-index="${index}">Delete</button></td>
+            `;
+            row.querySelector('.buy-btn').addEventListener('click', function () {
+                const buyList = JSON.parse(localStorage.getItem('buy-list')) || [];
+                buyList.push(bookmark);
+                localStorage.setItem('buy-list', JSON.stringify(buyList));
+                bookmarks.splice(index, 1);
+                localStorage.setItem('bookmark-list', JSON.stringify(bookmarks));
+                displayBookmarks(bookmarks);
+                window.location.href = 'buy.html';
+               });
+            row.querySelector('.delete-btn').addEventListener('click', function () {
+                bookmarks.splice(index, 1);
+                localStorage.setItem('bookmark-list', JSON.stringify(bookmarks));
+                displayBookmarks(bookmarks);
+            });
+            bookmarkTableBody.appendChild(row);
+        });
+    }
+
+    const bookmarks = JSON.parse(localStorage.getItem('bookmark-list')) || [];
+    displayBookmarks(bookmarks);
+});
+
+
+</script>
